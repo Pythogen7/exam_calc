@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "324359041171",
+    "project_id": "examscore-9422674153",
+    "storage_bucket": "examscore-9422674153.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324359041171:android:77b2a70367a3ca49665d66",
+        "android_client_info": {
+          "package_name": "com.pythogen.exam_calc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324359041171-7l40ppc351k0lbehb2sefes56akf4ebm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuMiG1H5W4q_l4tmmzTvyagGFHjh5YI_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324359041171-7l40ppc351k0lbehb2sefes56akf4ebm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
