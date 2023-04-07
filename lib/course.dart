@@ -1,7 +1,18 @@
 
+import 'dart:math';
+
 import 'package:easytext/easytext.dart';
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+
+import 'package:json_annotation/json_annotation.dart';
+import 'package:random_color/random_color.dart';
+
+import 'main.dart';
+
+part 'course.g.dart';
+@JsonSerializable()
 class Course {
   String name;
   int colorInt;
@@ -15,19 +26,29 @@ class Course {
       this.gradeDesired);
 
   factory Course.blank() {
-    return Course("", Colors.grey.value, double.negativeInfinity, double.negativeInfinity, double.negativeInfinity);
+    return Course("", RandomColor().randomColor().value, negativeInfinity, negativeInfinity, negativeInfinity);
   }
 
+
+  factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CourseToJson(this);
+
+
+
+
+}
+
+extension course_tools on Course {
   Color get color  => Color(colorInt);
 
   set color(Color color) => colorInt = color.value;
 
-  bool get allValuesSet => currentGrade!=double.negativeInfinity && gradeDesired!=double.negativeInfinity && examWeight!=double.negativeInfinity;
+  bool get allValuesSet => currentGrade!=negativeInfinity && gradeDesired!=negativeInfinity && examWeight!=negativeInfinity;
 
   bool get isPossible => gradeNeeded>100;
   bool get anyGrade =>gradeNeeded<=0;
-  double get gradeNeeded => !allValuesSet ? 100 : (currentGrade-currentGrade*examWeight-gradeDesired)/(-1*examWeight);
-
+  double get gradeNeeded => !allValuesSet ? 100 : max(0, (gradeDesired-currentGrade)/(.01*examWeight)+currentGrade);
 }
 
 
@@ -45,27 +66,17 @@ class _CourseWidgetState extends State<CourseWidget> {
   Widget build(BuildContext context) {
     double gN = widget.course.allValuesSet ? widget.course.gradeNeeded : 100;
     return AspectRatio(
-      aspectRatio: 3,
+      aspectRatio: 3.25,
       child: Container(
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: Colors.grey, width: .3)),
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(18),
+            color: Theme.of(context).canvasColor,
+
+            border: Border.all(color: Colors.grey, width: .5)),
         child: Row(children: [
           Expanded(child: Align(alignment: Alignment.centerLeft, child: Txt.b(widget.course.name, scaleFactor: 1.4,))),
-          ClipOval(child: AspectRatio(aspectRatio: 1, child: Stack(
-            children: [
-              Column(
-                children: <Widget>[
-                  Flexible(child: Container(color: Colors.grey[300],), flex: 100-gN.toInt()),
-                  Flexible(child: Container(color: widget.course.color), flex: gN.toInt()),
-
-                ],
-              ),
-              Center(child: Txt(widget.course.allValuesSet ? "${(widget.course.gradeNeeded).round()}%" : "N/A")),
-
-            ],
-          ),
-              ))
+          CircleProg(widget.course)
 
         ],),
 

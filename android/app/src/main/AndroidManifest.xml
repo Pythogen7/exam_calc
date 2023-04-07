@@ -1,9 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pythogen.exam_calc">
-   <application
-        android:label="exam_calc"
+    package="com.pythogen.examcalc">
+
+
+
+
+    <application
+        android:label="Exam Score Calculator"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
+
+        <meta-data
+            android:name="AdaptyPublicSdkKey"
+            android:value="public_live_5wT6YVLm.k4hb2R8uwcIMwm5m2apD" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
