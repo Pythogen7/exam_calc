@@ -47,6 +47,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+    	<false/>
 
 	<key>NSAdvertisingAttributionReportEndpoint</key>
     	<string>https://postbacks-app.com</string>
