@@ -23,6 +23,9 @@ import 'firebase_options.dart';
 
 const double negativeInfinity = -10000000;
 
+
+String get adsId => GetPlatform.isAndroid ? 'noads' : 'no.ads';
+
 void main() async {
   bool isDesktop = Platform.isWindows|| Platform.isLinux;
 
@@ -40,10 +43,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
  await Future.wait([
     if (!isDesktop) Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-    CrossPackage.init(ads: true, inAppPurchases: true)
+    CrossPackage.init(ads: true, inAppPurchases: {adsId})
   ]);
 
- EasyAds.linkShowAdCheckToIAP();
+ EasyAds.linkShowAdCheckToIAP(adsId);
 
   runApp(const MyApp());
 }
@@ -189,12 +192,12 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Expanded(
                   child: InAppAccessLevelChanger(
-                    "noads",
+                    adsId,
                     (a,b)=> EasyAds.hasAds ? Column(children: [
                        Padding(
                         padding: EdgeInsets.symmetric(horizontal: 36, vertical: 3),
                         child: Row(children: [Expanded(child: Txt("Remove Ads", scaleFactor: 1.2)), Button("\$1.99", () {
-                          InAppAdapty.purchase("noadspaywall");
+                          InAppAdapty.purchase(adsId);
                         })],),
                       ),
                       SizedBox(height: 8,),

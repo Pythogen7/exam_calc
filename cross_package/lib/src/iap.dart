@@ -1,75 +1,63 @@
 
 import 'dart:async';
 
-import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:cross_package/cross_package.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class InAppAdapty {
 
-  static AdaptyProfile? recentProfile;
-
-  static StreamController<AdaptyProfile> profileChange = StreamController.broadcast();
 
 
 
-  static Map<String, bool> getLocalStorageAccessLevels() {
-    return Map.from(LocalStorage.get("InAppAdapty.profile") ?? {}).cast();
+  static Set<String> purchasedIds = {};
+  static late ProductDetailsResponse products;
+
+
+  static Set<String> getLocalStorageAccessLevels() {
+    return Set.from(LocalStorage.get("IAP.Ids") ?? {}).cast();
   }
 
-  static Future saveLocalStorageAccessLevels(Map<String, AdaptyAccessLevel> val) {
-    return LocalStorage.put("InAppAdapty.profile", Map.from(val.map((key, value) => MapEntry(key, value?.isActive))));
+  static Future saveLocalStorageAccessLevels(Set<String> val) {
+    return LocalStorage.put("IAP.Ids", val.toList());
   }
 
 
-  static Future init() async {
+  static Future init(Set<String> productIds) async {
 
-    profileChange.stream.listen((event) {
-      saveLocalStorageAccessLevels(event.accessLevels);
+    products  = await InAppPurchase.instance.queryProductDetails(productIds);
+
+    final Stream<List<PurchaseDetails>> purchaseUpdated = InAppPurchase.instance.purchaseStream;
+    purchaseUpdated.listen((purchaseDetailsList) {
+      for (var d in purchaseDetailsList) {
+        if (d.status == PurchaseStatus.purchased || d.status == PurchaseStatus.restored) {
+          purchasedIds.add(d.productID);
+        }
+      }
+
+      saveLocalStorageAccessLevels(purchasedIds);
+
     });
 
-    Adapty().activate();
-    Future<AdaptyProfile?> pr = Adapty().restorePurchases();
-    pr.then((value) {
-      recentProfile = value;
-      if (value!=null) profileChange.add(value);
-    });
-    return pr;
-  }
 
-  static bool accessGranted(String accessLevel) {
-
-    if (recentProfile==null) {
-      return getLocalStorageAccessLevels()[accessLevel] ?? false;
-    }
-
-    return recentProfile?.accessLevels[accessLevel]?.isActive ?? false;
-  }
-
-  static Future purchase(String payWallId) async {
-    List<AdaptyPaywallProduct> p = (await Adapty().getPaywallProducts(
-        paywall: await Adapty().getPaywall(id: payWallId)));
-    if (p.isEmpty) {
-      return false;
-    }
-    AdaptyProfile? pr = await Adapty().makePurchase(product: p.first);
-    if (pr!=null) {
-      recentProfile = pr;
-      profileChange.add(pr);
-    }
-
-    if (recentProfile==null) {
-      refreshProfile();
-    }
+    await InAppPurchase.instance.restorePurchases();
 
 
   }
 
-  static Future<AdaptyProfile> refreshProfile() async {
-    recentProfile = await Adapty().getProfile();
-    profileChange.add(recentProfile!);
-    return recentProfile!;
+  static bool accessGranted(String productId) {
+    return getLocalStorageAccessLevels().contains(productId) ?? false;
   }
+
+  static Future purchase(String productId) async {
+    for (ProductDetails p in products.productDetails) {
+      if(p.id==productId) {
+        InAppPurchase.instance.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: p));
+      }
+    }
+
+  }
+
 }
 
 
@@ -85,7 +73,7 @@ class InAppPurchaseBuilder extends StatefulWidget {
 class _InAppPurchaseBuilderState extends State<InAppPurchaseBuilder> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(builder: (a,b)=>widget.onUpdate(a), stream: InAppAdapty.profileChange.stream);
+    return StreamBuilder(builder: (a,b)=>widget.onUpdate(a), stream: InAppPurchase.instance.purchaseStream);
   }
 }
 

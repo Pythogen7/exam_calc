@@ -16,9 +16,6 @@ class EasyAds {
   static void registerShowAdCheck(bool Function() showAd) => showAds=showAd;
 
   static void linkShowAdCheckToIAP([String adsAccessLevelId = "noads"]) => showAds = () {
-    if (InAppAdapty.recentProfile==null) {
-      InAppAdapty.refreshProfile();
-    }
     bool noAdsBought = InAppAdapty.accessGranted(adsAccessLevelId);
     return !noAdsBought;
   };
