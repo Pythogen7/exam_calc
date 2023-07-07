@@ -58,7 +58,7 @@ class _CourseEditorState extends State<CourseEditor> {
   Map<TextEditingController, FocusNode> focusNodes = {};
   Widget card(String question, bool visible, TextEditingController c,
       String hint, String followText, String okText, bool showButton,
-      void Function() okButton, bool requestFocus) {
+      void Function() okButton, bool requestFocus, TextInputType inputType) {
 
 
 
@@ -89,6 +89,7 @@ class _CourseEditorState extends State<CourseEditor> {
             Row(children: [
               Expanded(child: Row(children: [
                 Expanded(child: TextField( focusNode: fn,
+                  keyboardType: inputType,
                   controller: c, decoration: InputDecoration(hintText: hint),)),
                 Txt(followText),
               ],)),
@@ -143,7 +144,7 @@ class _CourseEditorState extends State<CourseEditor> {
                 setState(() {
 
                 });
-              }, widget.course.name.isEmpty),
+              }, widget.course.name.isEmpty, TextInputType.text),
               card(
                   "What is your current grade in the Course?",
                   widget.course.name.isNotEmpty,
@@ -162,7 +163,7 @@ class _CourseEditorState extends State<CourseEditor> {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Txt("Invalid Input")));
                 }
-              }, widget.course.currentGrade == negativeInfinity),
+              }, widget.course.currentGrade == negativeInfinity, TextInputType.number),
               card(
                   "How much of your grade is the exam worth?",
                   widget.course.currentGrade != negativeInfinity,
@@ -181,7 +182,7 @@ class _CourseEditorState extends State<CourseEditor> {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Txt("Invalid Input")));
                 }
-              }, widget.course.examWeight == negativeInfinity),
+              }, widget.course.examWeight == negativeInfinity, TextInputType.number),
               card(
                   "What grade do you want overall?",
                   widget.course.examWeight != negativeInfinity,
@@ -189,7 +190,7 @@ class _CourseEditorState extends State<CourseEditor> {
                   "Grade Desired",
                   "",
                   "Calculate",
-                  widget.course.gradeDesired == negativeInfinity, calculate, gN==null),
+                  widget.course.gradeDesired == negativeInfinity, calculate, gN==null, TextInputType.number),
               if (gN!=null && EasyAds.hasAds) Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: EasyAds.banner('01e45e20874150b0', 'dc80f0c0f850b9ea'),
