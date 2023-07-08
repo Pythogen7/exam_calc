@@ -26,9 +26,7 @@ class InAppAdapty {
 
   static Future init(Set<String> productIds) async {
 
-    print('init stsart');
     products  = await InAppPurchase.instance.queryProductDetails(productIds);
-    print('init stsart ${products.notFoundIDs}');
 
     final Stream<List<PurchaseDetails>> purchaseUpdated = InAppPurchase.instance.purchaseStream;
     purchaseUpdated.listen((purchaseDetailsList) {
@@ -36,12 +34,12 @@ class InAppAdapty {
         if (d.status == PurchaseStatus.purchased || d.status == PurchaseStatus.restored) {
           purchasedIds.add(d.productID);
         } else if (d.status == PurchaseStatus.error) {
-          print("Error Occured in Purchase");
           d.error?.printError();
         }
       }
 
       saveLocalStorageAccessLevels(purchasedIds);
+
 
     });
 
@@ -56,18 +54,14 @@ class InAppAdapty {
   }
 
   static Future purchase(String productId) async {
-    print("Starting Piurchase");
     for (ProductDetails p in products.productDetails) {
-     print("${p.id}");
-
       if(p.id==productId) {
-        print("Doing Piurchase");
 
-        InAppPurchase.instance.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: p));
+
+        await InAppPurchase.instance.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: p));
       }
     }
 
-    print("Done");
 
 
   }

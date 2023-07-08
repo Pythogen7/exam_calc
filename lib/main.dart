@@ -154,40 +154,42 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                   child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                       const Center(child: Padding(
-                         padding: EdgeInsets.symmetric(vertical: 28),
-                         child: Txt.b("Exam Score Calculator", scaleFactor: 1.5),
-                       )),
-                        if (Prefs.self.courses.isEmpty) const Center(child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 56),
-                          child: Txt("Press '+' to add a Course", scaleFactor: 1.5,),
-                        )),
-                        ... List.generate(Prefs.self.courses.length, (index) {
+                   child: InAppAccessLevelChanger(
+                     adsId, (a,b)=> Column(
+                       crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                         const Center(child: Padding(
+                           padding: EdgeInsets.symmetric(vertical: 28),
+                           child: Txt.b("Exam Score Calculator", scaleFactor: 1.5),
+                         )),
+                          if (Prefs.self.courses.isEmpty) const Center(child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 56),
+                            child: Txt("Press '+' to add a Course", scaleFactor: 1.5,),
+                          )),
+                          ... List.generate(Prefs.self.courses.length, (index) {
 
-                          Widget w = InkWell(
-                            onTap: ()=>launchEdit(Prefs.self.courses[index]),
-                            child:
-                            CourseWidget(Prefs.self.courses[index]));
-
-
-                          if (index%3==2 && EasyAds.hasAds) {
-                            //Add an add to this Widget
-
-                            return Column(children: [
-                              w,
-                              EasyAds.mrecDecorated('d69da509fd6d400e', '623d8fe8c6da0665')
-                            ],);
-                          }
-                          return w;
-
-                        }),
+                            Widget w = InkWell(
+                              onTap: ()=>launchEdit(Prefs.self.courses[index]),
+                              child:
+                              CourseWidget(Prefs.self.courses[index]));
 
 
-                      ],
-                    ),
+                            if (index%3==2 && EasyAds.hasAds) {
+                              //Add an add to this Widget
+
+                              return Column(children: [
+                                w,
+                                EasyAds.mrecDecorated('d69da509fd6d400e', '623d8fe8c6da0665')
+                              ],);
+                            }
+                            return w;
+
+                          }),
+
+
+                        ],
+                      ),
+                   ),
                  ),
             ),
             Row(
@@ -198,8 +200,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     (a,b)=> EasyAds.hasAds ? Column(children: [
                        Padding(
                         padding: EdgeInsets.symmetric(horizontal: 36, vertical: 3),
-                        child: Row(children: [Expanded(child: Txt("Remove Ads", scaleFactor: 1.2)), Button("\$1.99", () {
-                          InAppAdapty.purchase(adsId);
+                        child: Row(children: [Expanded(child: Txt("Remove Ads", scaleFactor: 1.2)), Button("\$1.99", () async {
+                          showDialog(barrierDismissible: false, context: context, builder: (b)=>AlertDialog(content: CircularProgressIndicator()));
+                          InAppAdapty.purchase(adsId).then((value) {
+                            Navigator.pop(context);
+                          });
+
+
                         })],),
                       ),
                       SizedBox(height: 8,),
