@@ -60,6 +60,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
+
       theme: ThemeData(
           colorScheme: ColorScheme(
             primary: Colors.lightBlue,
