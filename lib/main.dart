@@ -202,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: EdgeInsets.symmetric(horizontal: 36, vertical: 3),
                         child: Row(children: [Expanded(child: Txt("Remove Ads", scaleFactor: 1.2)), Button("\$1.99", () async {
                           showDialog(barrierDismissible: true, context: context, builder: (b)=>AlertDialog(content: SizedBox.square(dimension: 80, child: CircularProgressIndicator())));
-                          InAppAdapty.purchase(adsId).then((value) {
+                          InAppAdapty.purchase(context, adsId).then((value) {
                             Navigator.pop(context);
                           });
 

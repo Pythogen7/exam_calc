@@ -22,7 +22,9 @@ class CrossPackage {
 
 
     return LocalStorage.initialize().then((v) {
-      if (inAppPurchases!=null) InAppAdapty.init(inAppPurchases);
+      if (inAppPurchases!=null) InAppAdapty.init([
+        IAPProd("Remove Ads", "1.99", "noads")
+      ]);
     });
 
   }
