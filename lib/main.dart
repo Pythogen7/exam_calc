@@ -201,17 +201,12 @@ class _MyHomePageState extends State<MyHomePage> {
                        Padding(
                         padding: EdgeInsets.symmetric(horizontal: 36, vertical: 3),
                         child: Row(children: [Expanded(child: Txt("Remove Ads", scaleFactor: 1.2)), Button("\$1.99", () async {
-                          showDialog(barrierDismissible: true, context: context, builder: (b)=>AlertDialog(content: SizedBox.square(dimension: 80, child: CircularProgressIndicator())));
-                          InAppAdapty.purchase(context, adsId).then((value) {
-                            Navigator.pop(context);
-                          });
-
-
-                        })],),
+                          InAppAdapty.purchase(context, adsId);
+                          }
                       ),
                       SizedBox(height: 8,),
                       EasyAds.banner('1487ef2952682dd0', '66fed48142571607')
-                    ],) : SizedBox(),
+                    ],))]) : SizedBox(),
                   ),
                 ),
                 SizedBox(width: 56,)
