@@ -24,7 +24,7 @@ import 'firebase_options.dart';
 const double negativeInfinity = -10000000;
 
 
-String get adsId => GetPlatform.isAndroid ? 'noads' : 'no.ads';
+String get adsId => 'noads';
 
 void main() async {
   bool isDesktop = Platform.isWindows|| Platform.isLinux;
@@ -137,98 +137,111 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   void launchEdit(Course c) {
-
-    Get.to(()=>CourseEditor(c, deleteCourse))?.then((value) => setState((){}));
+    Get.to(() => CourseEditor(c, deleteCourse))?.then((value) =>
+        setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-     body:
-     Stack(
-       children: [
-         const Opacity(opacity: .15, child: IconBackground(icons: MyHomePage.iconsForBackground, padding: 24)),
-         SafeArea(
-           child:
-        Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                   child: InAppAccessLevelChanger(
-                     adsId, (a,b)=> Column(
-                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                         const Center(child: Padding(
-                           padding: EdgeInsets.symmetric(vertical: 28),
-                           child: Txt.b("Exam Score Calculator", scaleFactor: 1.5),
-                         )),
-                          if (Prefs.self.courses.isEmpty) const Center(child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 56),
-                            child: Txt("Press '+' to add a Course", scaleFactor: 1.5,),
-                          )),
-                          ... List.generate(Prefs.self.courses.length, (index) {
-
-                            Widget w = InkWell(
-                              onTap: ()=>launchEdit(Prefs.self.courses[index]),
-                              child:
-                              CourseWidget(Prefs.self.courses[index]));
-
-
-                            if (index%3==2 && EasyAds.hasAds) {
-                              //Add an add to this Widget
-
-                              return Column(children: [
-                                w,
-                                EasyAds.mrecDecorated('d69da509fd6d400e', '623d8fe8c6da0665')
-                              ],);
-                            }
-                            return w;
-
-                          }),
-
-
-                        ],
-                      ),
-                   ),
-                 ),
-            ),
-            Row(
+    return Scaffold(
+      body:
+      Stack(
+        children: [
+          const Opacity(opacity: .15,
+              child: IconBackground(
+                  icons: MyHomePage.iconsForBackground, padding: 24)),
+          SafeArea(
+            child:
+            Column(
               children: [
                 Expanded(
-                  child: InAppAccessLevelChanger(
-                    adsId,
-                    (a,b)=> EasyAds.hasAds ? Column(children: [
-                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 36, vertical: 3),
-                        child: Row(children: [Expanded(child: Txt("Remove Ads", scaleFactor: 1.2)), Button("\$1.99", () async {
-                          InAppAdapty.purchase(context, adsId);
-                          }
-                      ),
-                      SizedBox(height: 8,),
-                      EasyAds.banner('1487ef2952682dd0', '66fed48142571607')
-                    ],))]) : SizedBox(),
+                  child: SingleChildScrollView(
+                    child: InAppAccessLevelChanger(
+                      adsId, (a, b) =>
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            const Center(child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 28),
+                              child: Txt.b(
+                                  "Exam Score Calculator", scaleFactor: 1.5),
+                            )),
+                            if (Prefs.self.courses.isEmpty) const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 56),
+                                  child: Txt("Press '+' to add a Course",
+                                    scaleFactor: 1.5,),
+                                )),
+                            ... List.generate(
+                                Prefs.self.courses.length, (index) {
+                              Widget w = InkWell(
+                                  onTap: () =>
+                                      launchEdit(Prefs.self.courses[index]),
+                                  child:
+                                  CourseWidget(Prefs.self.courses[index]));
+
+
+                              if (index % 3 == 2 && EasyAds.hasAds) {
+                                //Add an add to this Widget
+
+                                return Column(children: [
+                                  w,
+                                  EasyAds.mrecDecorated(
+                                      'd69da509fd6d400e', '623d8fe8c6da0665')
+                                ],);
+                              }
+                              return w;
+                            }),
+
+
+                          ],
+                        ),
+                    ),
                   ),
                 ),
-                SizedBox(width: 56,)
+                Row(
+                  children: [
+                    Expanded(
+                      child: InAppAccessLevelChanger(
+                        adsId,
+                            (a, b) =>
+                        EasyAds.hasAds ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 36, vertical: 3),
+                                  child: Row(children: [
+                                    const Expanded(child: Txt("Remove Ads", scaleFactor: 1.2)),
+                                    Button("\$1.99", () async {
+                                      InAppAdapty.purchase(context, adsId);
+                                    }),
+                                  ],)),
+                              SizedBox(height: 8,),
+                              EasyAds.banner(
+                                  '1487ef2952682dd0', '66fed48142571607')
+                            ]) : SizedBox(),
+                      ),
+                    ),
+                    SizedBox(width: 56,)
+                  ],
+                )
+
               ],
-            )
-
-          ],
-        ),
-         ),
-       ],
-     ),
+            ),
+          ),
+        ],
+      ),
 
 
-     floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Course c = Course.blank();
 
 
           Prefs.addCourse(c);
           launchEdit(c);
-          300.milliseconds.delay().then((value) => setState((){}));
-
+          300.milliseconds.delay().then((value) => setState(() {}));
         },
         tooltip: 'Add Course',
         child: const Icon(Icons.add, color: Colors.white),
