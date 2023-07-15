@@ -54,7 +54,7 @@ class InAppAdapty {
   static Future restorePurchases() => InAppPurchase.instance.restorePurchases();
 
   static bool accessGranted(String androidId) {
-    return getLocalStorageAccessLevels().contains(androidId) ?? false;
+    return getLocalStorageAccessLevels().contains(InAppAdapty.productInit.firstWhere((element) => androidId==element.idAndroid).correctId) ?? false;
   }
 
   static Future purchase(BuildContext context, String androidId) async {
