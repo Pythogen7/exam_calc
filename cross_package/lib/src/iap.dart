@@ -36,6 +36,9 @@ class InAppAdapty {
       for (var d in purchaseDetailsList) {
         if (d.status == PurchaseStatus.purchased || d.status == PurchaseStatus.restored) {
           purchasedIds.add(d.productID);
+          if (d.pendingCompletePurchase) {
+            InAppPurchase.instance.completePurchase(d);
+          }
         } else if (d.status == PurchaseStatus.error) {
           d.error?.printError();
         }
@@ -74,7 +77,6 @@ class InAppAdapty {
       showDialog<void>(
         context: context,
         barrierDismissible: true,
-        // false = user must tap button, true = tap outside dialog
         builder: (BuildContext dialogContext) {
           return AlertDialog(
             content: Column(
@@ -109,9 +111,9 @@ class InAppAdapty {
                   for (ProductDetails p in products.productDetails) {
                     if (p.id == prod.correctId) {
                       var n = Navigator.of(dialogContext);
-                      await InAppPurchase.instance.buyNonConsumable(
-                          purchaseParam: PurchaseParam(productDetails: p));
                       n.pop(); // Dismiss alert dialog
+                      await InAppPurchase.instance.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: p));
+
                     }
                   }
                 },
